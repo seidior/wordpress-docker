@@ -80,29 +80,26 @@ $RECYCLE.BIN/
 #
 # Note: if you want to stage/commit WP core files
 # you can delete this whole section/until Configuration.
-/wp-admin/
-/wp-content/index.php
-/wp-content/languages
-/wp-content/plugins/index.php
-/wp-content/themes/index.php
-/wp-includes/
-/index.php
-/license.txt
-/readme.html
-/wp-*.php
-/xmlrpc.php
+/wordpress/wp-admin/
+/wordpress/wp-content/
+/wordpress/wp-includes/
+/wordpress/index.php
+/wordpress/license.txt
+/wordpress/readme.html
+/wordpress/wp-*.php
+/wordpress/xmlrpc.php
 
 # Configuration
 wp-config.php
 
 # Example themes
-/wp-content/themes/twenty*/
+/wordpress/wp-content/themes/twenty*/
 
 # Example plugin
-/wp-content/plugins/hello.php
+/wordpress/wp-content/plugins/hello.php
 
 # Uploads
-/wp-content/uploads/
+/wordpress/wp-content/uploads/
 
 # Log files
 *.log

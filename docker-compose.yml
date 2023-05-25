@@ -1,17 +1,18 @@
 services:
   nginx:
-    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     depends_on:
       - php
-    image: nginx:alpine
     networks:
       - backend
       - frontend
     ports:
       - "80:80"
+      - "443:443"
     restart: unless-stopped
     volumes:
-      - ./nginx:/etc/nginx/conf.d
       - ./wordpress:/app
   php:
     build:
@@ -42,7 +43,10 @@ services:
       start_period: 60s
       retries: 180
     networks:
+  #     - frontend
       - backend
+  #   ports:
+  #     - "3306:3306"
     restart: unless-stopped
     volumes:
       - mysqldata:/var/lib/mysql
@@ -60,7 +64,7 @@ services:
   #     - frontend
   #     - backend
   #   ports:
-  #     - 8080:80
+  #     - "8080:80"
   #   restart: unless-stopped
 
 volumes:
