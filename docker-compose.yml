@@ -1,0 +1,75 @@
+services:
+  nginx:
+    container_name: nginx
+    depends_on:
+      - php
+    image: nginx:alpine
+    networks:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./wordpress:/app
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: php
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_HOST: ${MYSQL_HOST}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    networks:
+      - backend
+    restart: unless-stopped
+    volumes:
+      - ./wordpress:/app
+  mysql:
+    container_name: db
+    env_file: .env
+    image: mariadb:latest
+    healthcheck:
+      test: mysql ${MYSQL_DATABASE} --user=${MYSQL_USER} --password='${MYSQL_PASSWORD}' --silent --execute "SELECT 1;"
+      interval: 3s
+      timeout: 3s
+      start_period: 60s
+      retries: 180
+    networks:
+      - backend
+    restart: unless-stopped
+    volumes:
+      - mysqldata:/var/lib/mysql
+  # phpmyadmin:
+  #   container_name: phpmyadmin
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   environment:
+  #     PMA_HOST: ${MYSQL_HOST}
+  #     PMA_USER: root
+  #     PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #   image: phpmyadmin:latest
+  #   networks:
+  #     - frontend
+  #     - backend
+  #   ports:
+  #     - 8080:80
+  #   restart: unless-stopped
+
+volumes:
+  mysqldata:
+    name: wordpress-mysql
+
+networks:
+  backend:
+    name: backend
+    internal: true
+  frontend:
+    name: frontend
